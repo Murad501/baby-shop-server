@@ -46,6 +46,52 @@ const run = async () => {
       res.send(result);
     });
 
+    app.put("/seller/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          isVerified: true,
+        },
+      };
+      const result = await userCollections.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
+    app.get("/buyers", async (req, res) => {
+      const query = { role: "buyer" };
+      const result = await userCollections.find(query).toArray();
+      res.send(result);
+    });
+
+    app.get("/admins", async (req, res) => {
+      const query = { role: "admin" };
+      const result = await userCollections.find(query).toArray();
+      res.send(result);
+    });
+
+    app.put("/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: "admin",
+        },
+      };
+      const result = await userCollections.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
+    //remove-user
+    app.delete("/remove-user/:email", async (req, res) => {
+      const email = req.params.email;
+      const queryOne = { postedBy: email };
+      const queryTwo = { email: email };
+      await productCollections.deleteMany(queryOne);
+      const result = await userCollections.deleteOne(queryTwo);
+      res.send(result);
+    });
+
     // product
     app.get("/products", async (req, res) => {
       const query = {};
@@ -59,14 +105,21 @@ const run = async () => {
       res.send(result);
     });
 
+    app.patch("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const product = req.body;
+      const result = await productCollections.replaceOne(query, product);
+      res.send(result);
+    });
 
     //remove-product
-    app.delete("/remove-product/:id", async(req, res)=>{
-      const id = req.params.id
-      const query = {_id: new ObjectId(id)}
-      const result = await productCollections.deleteOne(query)
-      res.send(result)
-    })
+    app.delete("/remove-product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollections.deleteOne(query);
+      res.send(result);
+    });
 
     // category
     app.get("/categories", async (req, res) => {
