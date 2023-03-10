@@ -50,6 +50,13 @@ const run = async () => {
       res.send(result);
     });
 
+    app.get('/seller/:email', async(req, res)=>{
+      const email = req.params.email
+      const query = {email: email}
+      const result = await userCollections.findOne(query)
+      res.send(result)
+    })
+
     app.put("/seller/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -108,6 +115,16 @@ const run = async () => {
       const result = await productCollections.insertOne(product);
       res.send(result);
     });
+
+    app.put('/advertise-product/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const updateDoc = {
+        $set: {advertised: true}
+      }
+      const result = await productCollections.updateOne(query, updateDoc)
+      res.send(result)
+    })
 
     app.post("/sold-product/:id", async (req, res) => {
       const id = req.params.id;
