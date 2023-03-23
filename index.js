@@ -50,12 +50,19 @@ const run = async () => {
       res.send(result);
     });
 
-    app.get('/seller/:email', async(req, res)=>{
-      const email = req.params.email
-      const query = {email: email}
-      const result = await userCollections.findOne(query)
-      res.send(result)
-    })
+    app.get("/seller/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await userCollections.findOne(query);
+      res.send(result);
+    });
+
+    app.get("/is-seller/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await userCollections.findOne(query);
+      res.send({ isAdmin: user.role === 'admin' });
+    });
 
     app.put("/seller/:id", async (req, res) => {
       const id = req.params.id;
@@ -93,6 +100,13 @@ const run = async () => {
       res.send(result);
     });
 
+    app.get("/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await userCollections.findOne(query);
+      res.send({ isAdmin: user.role === 'admin' });
+    });
+
     //remove-user
     app.delete("/remove-user/:email", async (req, res) => {
       const email = req.params.email;
@@ -116,15 +130,15 @@ const run = async () => {
       res.send(result);
     });
 
-    app.put('/advertise-product/:id', async(req, res)=>{
-      const id = req.params.id
-      const query = {_id: new ObjectId(id)}
+    app.put("/advertise-product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
       const updateDoc = {
-        $set: {advertised: true}
-      }
-      const result = await productCollections.updateOne(query, updateDoc)
-      res.send(result)
-    })
+        $set: { advertised: true },
+      };
+      const result = await productCollections.updateOne(query, updateDoc);
+      res.send(result);
+    });
 
     app.post("/sold-product/:id", async (req, res) => {
       const id = req.params.id;
